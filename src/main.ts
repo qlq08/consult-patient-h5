@@ -1,14 +1,12 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import persist from 'pinia-plugin-persistedstate'
+
 import App from './App.vue'
 import router from './router'
+import pinia from './stores'
 import './styles/main.scss'
 
 const app = createApp(App)
 
-// 使用pinia插件，use(pinia的插件)
-app.use(createPinia().use(persist))
 app.use(router)
-
+app.use(pinia)
 app.mount('#app')
