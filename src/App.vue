@@ -1,23 +1,7 @@
 <script lang="ts" setup>
-import { useUserStore } from './stores'
-
-const store = useUserStore()
+// as取别名
+import { Button as VanButton } from 'vant'
 </script>
 <template>
-  <div>App根组件</div>
-  <div>用户:{{ store.user }}</div>
-  <button
-    @click="
-      store.setUser({
-        id: '1',
-        mobile: '1',
-        avatar: '1',
-        account: '1',
-        token: '1'
-      })
-    "
-  >
-    登录
-  </button>
-  <button @click="store.delUser()">退出</button>
+  <van-button type="success">按钮</van-button>
 </template>
