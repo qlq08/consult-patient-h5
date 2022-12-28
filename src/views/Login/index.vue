@@ -33,6 +33,12 @@ const agree = ref(false)
         <a href="javascript:;">忘记密码?</a>
       </div>
     </van-form>
+    <!-- 测试svg图标 -->
+    <!-- 'icon-[dir]-[name]' dir图标所在目录 name图标的名称  -->
+    <svg aria-hidden="true">
+      <!-- #icon-文件夹名称-图片名称 -->
+      <use href="#icon-home-docs" />
+    </svg>
     <!-- 底部 -->
     <div class="login-other">
       <van-divider>第三方登录</van-divider>
