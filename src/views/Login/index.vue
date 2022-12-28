@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-
+import { mobileRules, passwordRules } from '@/utils/rules'
+import { showToast } from 'vant'
 const agree = ref(false)
 const show = ref(false)
 
 // 表单的数据
 const mobile = ref('')
 const password = ref('')
+
+const login = () => {
+  // 当表单校验成功后触发 submit 时间 触发这个 login 函数
+  if (!agree.value) return showToast('请勾选用户协议')
+  console.log('可以发请求')
+}
 </script>
 <template>
   <div class="login-page">
@@ -21,9 +28,15 @@ const password = ref('')
     </div>
     <!-- form 表单 -->
     <van-form autocomplete="off">
-      <van-field v-model="mobile" type="text" placeholder="请输入手机号" />
+      <van-field
+        v-model="mobile"
+        :rules="mobileRules"
+        type="text"
+        placeholder="请输入手机号"
+      />
       <van-field
         v-model="password"
+        :rules="passwordRules"
         :type="show ? 'text' : 'password'"
         placeholder="请输入密码"
       >
@@ -44,7 +57,10 @@ const password = ref('')
         </van-checkbox>
       </div>
       <div class="cp-cell">
-        <van-button block round type="primary">登录</van-button>
+        <!-- 设置button组件为原生 submit 类型按钮 -->
+        <van-button native-type="submit" block round type="primary"
+          >登录</van-button
+        >
       </div>
       <div class="cp-cell">
         <a href="javascript:;">忘记密码?</a>
