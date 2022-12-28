@@ -2,6 +2,9 @@
 import type { UserInfo } from '@/types/user'
 import { getUserInfo } from '@/services/user'
 import { ref, onMounted } from 'vue'
+import { useUserStore } from '@/stores'
+import { useRouter } from 'vue-router'
+import { showDialog } from 'vant'
 
 // 获取用户信息且渲染
 const user = ref<UserInfo>()
@@ -20,6 +23,21 @@ const tools = [
   { label: '官方客服', path: '/' },
   { label: '设置', path: '/' }
 ]
+
+// 退出登录
+const store = useUserStore()
+const router = useRouter()
+const logout = async () => {
+  await showDialog({
+    title: '温馨提示',
+    message: '您是否确认退出优医问诊吗?',
+    confirmButtonText: '是',
+    cancelButtonText: '否'
+  })
+  // 执行退出逻辑, 清除用户信息，跳转到登录
+  store.delUser()
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -101,6 +119,8 @@ const tools = [
         </template>
       </van-cell>
     </div>
+    <!-- 退出登录  -->
+    <a href="javascript:;" class="logout" @click="logout">退出登录</a>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -200,6 +220,13 @@ const tools = [
       font-style: 17px;
       margin-right: 10px;
     }
+  }
+  .logout {
+    display: block;
+    margin: 20px auto;
+    width: 100px;
+    text-align: center;
+    color: var(--cp-price);
   }
 }
 </style>
