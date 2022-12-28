@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
+import { ref, onUnmounted } from 'vue'
 import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
-import { showToast } from 'vant'
+import { showToast, type FormInstance } from 'vant'
 import { useUserStore } from '@/stores'
 import { useRoute, useRouter } from 'vue-router'
-import { loginByPassword } from '@/services/user'
+import { loginByPassword, sendMobileCode } from '@/services/user'
 const agree = ref(false)
 const show = ref(false)
 
@@ -32,6 +31,33 @@ const login = async () => {
 // 短信登录页面切换，添加短信输入框校验
 const isPass = ref(true)
 const code = ref('')
+
+// 发送短信验证码
+// 1. API接口调用函数
+// 2. 发送短信验证码: 判断是否正在进行倒计时  校验输入框   调用短信接口
+// 3. 接口成功,倒计时,组件销毁要清理定时器
+const time = ref(0)
+const form = ref<FormInstance | null>(null)
+let timeId: number
+const send = async () => {
+  // 已经倒计时 time的值大于0，不能发送验证码
+  if (time.value > 0) return
+  // 验证不通过报错,阻止程序继续执行
+  await form.value?.validate('mobile')
+  // 上面的校验成功发验证码
+  await sendMobileCode(mobile.value, 'login')
+  time.value = 60
+  showToast('发送成功')
+  // 开启倒计时
+  if (timeId) clearInterval(timeId)
+  timeId = setInterval(() => {
+    time.value--
+    if (time.value <= 0) clearInterval(timeId)
+  }, 1000)
+}
+onUnmounted(() => {
+  clearInterval(timeId)
+})
 </script>
 <template>
   <div class="login-page">
@@ -45,8 +71,9 @@ const code = ref('')
       </a>
     </div>
     <!-- form 表单 -->
-    <van-form autocomplete="off" @submit="login">
+    <van-form autocomplete="off" @submit="login" ref="form">
       <van-field
+        name="mobile"
         v-model="mobile"
         :rules="mobileRules"
         type="text"
@@ -73,7 +100,9 @@ const code = ref('')
         placeholder="请输入验证码"
       >
         <template #button>
-          <span class="btn-send">发送验证码</span>
+          <span class="btn-send" :class="{ active: time > 0 }" @click="send">{{
+            time > 0 ? `${time}s后发送验证码` : '发送验证码'
+          }}</span>
         </template>
       </van-field>
       <div class="cp-cell">
