@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { mobileRules, passwordRules } from '@/utils/rules'
+
+import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
 import { showToast } from 'vant'
 import { useUserStore } from '@/stores'
 import { useRoute, useRouter } from 'vue-router'
@@ -16,26 +17,30 @@ const store = useUserStore()
 const router = useRouter()
 const route = useRoute()
 const login = async () => {
-  // 当表单校验成功后触发 submit 时间 触发这个 login 函数
+  // 当表单校验成功后触发 submit 事件 触发这个 login 函数
   if (!agree.value) return showToast('请勾选用户协议')
 
   // 验证完毕,进行登录
   const res = await loginByPassword(mobile.value, password.value)
-  // 成功
+  // 成功 :  存储用户信息+跳转地址+成功提示
   store.setUser(res.data)
   // 如果有回跳地址就进行回跳，没有跳转到个人中心
   router.push((route.query.returnUrl as string) || 'user')
   showToast('登录成功')
 }
+
+// 短信登录页面切换，添加短信输入框校验
+const isPass = ref(true)
+const code = ref('')
 </script>
 <template>
   <div class="login-page">
     <CpNavBar right-text="注册" @click-right="$router.push('/register')" />
     <!-- 头部 -->
     <div class="login-head">
-      <h3>密码登录</h3>
-      <a href="javascript:;">
-        <span>短信验证码登录</span>
+      <h3>{{ isPass ? '密码登录' : '短信验证码登录' }}</h3>
+      <a href="javascript:;" @click="isPass = !isPass">
+        <span>{{ isPass ? '短信验证码登录' : '密码登录' }}</span>
         <van-icon name="arrow" />
       </a>
     </div>
@@ -48,6 +53,7 @@ const login = async () => {
         placeholder="请输入手机号"
       />
       <van-field
+        v-if="isPass"
         v-model="password"
         :rules="passwordRules"
         :type="show ? 'text' : 'password'"
@@ -60,7 +66,16 @@ const login = async () => {
           ></cp-icon>
         </template>
       </van-field>
-
+      <van-field
+        v-else
+        v-model="code"
+        :rules="codeRules"
+        placeholder="请输入验证码"
+      >
+        <template #button>
+          <span class="btn-send">发送验证码</span>
+        </template>
+      </van-field>
       <div class="cp-cell">
         <van-checkbox v-model="agree">
           <span>我已同意</span>
@@ -136,6 +151,12 @@ const login = async () => {
         color: var(--cp-primary);
         padding: 0 5px;
       }
+    }
+  }
+  .btn-send {
+    color: var(--cp-primary);
+    &.active {
+      color: rgba(22, 194, 163, 0.5);
     }
   }
 }
