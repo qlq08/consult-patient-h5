@@ -17,6 +17,8 @@ const options = [
   { label: '男', value: 1 },
   { label: '女', value: 0 }
 ]
+
+const gender = ref(1)
 </script>
 
 <template>
@@ -42,7 +44,7 @@ const options = [
       <div class="patient-tip">最多可添加 6 人</div>
     </div>
     <!-- 测试 cp-radio-btn 组件 -->
-    <cp-radio-btn :options="options" />
+    <cp-radio-btn :options="options" v-model="gender" />
   </div>
 </template>
 <style lang="scss" scoped>
