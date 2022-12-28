@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import { mobileRules, passwordRules } from '@/utils/rules'
 import { showToast } from 'vant'
+import { useUserStore } from '@/stores'
+import { useRoute, useRouter } from 'vue-router'
+import { loginByPassword } from '@/services/user'
 const agree = ref(false)
 const show = ref(false)
 
@@ -9,10 +12,20 @@ const show = ref(false)
 const mobile = ref('')
 const password = ref('')
 
-const login = () => {
+const store = useUserStore()
+const router = useRouter()
+const route = useRoute()
+const login = async () => {
   // 当表单校验成功后触发 submit 时间 触发这个 login 函数
   if (!agree.value) return showToast('请勾选用户协议')
-  console.log('可以发请求')
+
+  // 验证完毕,进行登录
+  const res = await loginByPassword(mobile.value, password.value)
+  // 成功
+  store.setUser(res.data)
+  // 如果有回跳地址就进行回跳，没有跳转到个人中心
+  router.push((route.query.returnUrl as string) || 'user')
+  showToast('登录成功')
 }
 </script>
 <template>
