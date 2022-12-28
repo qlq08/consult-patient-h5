@@ -1,8 +1,9 @@
 // 给components 下的全局组件, 设置类型
 // 核心代码
 // 1.导入组件实例
+// 给components 下的全局组件, 设置类型
 import CpNavBar from '@/components/CpNavBar.vue'
-
+import CpIcon from '@/components/CpIcon.vue'
 // const obj = {
 //   name: 'jack',
 //   age: 10
@@ -23,5 +24,6 @@ declare module 'vue' {
     // typeof 作用是得到对应的TS类型
     // 指定组件类型, typeof 从组件对象得到类型,设置给全局组件: CpNavBar
     CpNavBar: typeof CpNavBar
+    CpIcon: typeof CpIcon
   }
 }
