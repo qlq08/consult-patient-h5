@@ -27,7 +27,7 @@ const login = () => {
       </a>
     </div>
     <!-- form 表单 -->
-    <van-form autocomplete="off">
+    <van-form autocomplete="off" @submit="login">
       <van-field
         v-model="mobile"
         :rules="mobileRules"
