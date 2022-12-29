@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getPatientList } from '@/services/user'
+import { getPatientList, addPatient } from '@/services/user'
 import type { Patient } from '@/types/user'
 import { showToast } from 'vant'
 import Validator from 'id-validator'
@@ -51,7 +51,7 @@ const defaultFlag = computed({
 })
 
 // 表单提交
-const submit = () => {
+const submit = async () => {
   if (!patient.value.name) return showToast('请输入姓名')
   if (!patient.value.idCard) return showToast('请输入身份证号')
   // 校验身份证号
@@ -60,6 +60,12 @@ const submit = () => {
     return showToast('身份证号不正确')
   const info = validate.getInfo(patient.value.idCard)
   if (info.sex !== patient.value.gender) return showToast('性别与身份不符')
+
+  // 添加逻辑
+  await addPatient(patient.value)
+  // 成功
+  show.value = false
+  showToast('添加患者成功')
 }
 </script>
 

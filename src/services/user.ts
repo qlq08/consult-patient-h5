@@ -20,3 +20,7 @@ export const getUserInfo = () => request<UserInfo>('/patient/myUser')
 
 // 获取患者信息列表
 export const getPatientList = () => request<Patient[]>('patient/mylist')
+
+// 添加患者信息
+export const addPatient = (patient: Patient) =>
+  request('patient/add', 'POST', patient)
