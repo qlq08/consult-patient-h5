@@ -11,6 +11,7 @@ const user = ref<UserInfo>()
 onMounted(async () => {
   const res = await getUserInfo()
   user.value = res.data
+  console.log(user.value)
 })
 
 // tools 的数据
