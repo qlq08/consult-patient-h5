@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { getPatientList } from '@/services/user'
 import type { Patient } from '@/types/user'
+import { showToast } from 'vant'
+import Validator from 'id-validator'
 import { onMounted, ref, computed } from 'vue'
 
 // 1.页面初始化加载数据
@@ -47,6 +49,18 @@ const defaultFlag = computed({
     patient.value.defaultFlag = val ? 1 : 0
   }
 })
+
+// 表单提交
+const submit = () => {
+  if (!patient.value.name) return showToast('请输入姓名')
+  if (!patient.value.idCard) return showToast('请输入身份证号')
+  // 校验身份证号
+  const validate = new Validator()
+  if (!validate.isValid(patient.value.idCard))
+    return showToast('身份证号不正确')
+  const info = validate.getInfo(patient.value.idCard)
+  if (info.sex !== patient.value.gender) return showToast('性别与身份不符')
+}
 </script>
 
 <template>
@@ -73,7 +87,12 @@ const defaultFlag = computed({
     </div>
     <!-- 弹出层 -->
     <van-popup v-model:show="show" position="right">
-      <cp-nav-bar :back="() => (show = false)" title="添加患者"></cp-nav-bar>
+      <cp-nav-bar
+        :back="() => (show = false)"
+        title="添加患者"
+        right-text="保存"
+        @click-right="submit"
+      ></cp-nav-bar>
       <van-form autocomplete="off">
         <van-field
           v-model="patient.name"
