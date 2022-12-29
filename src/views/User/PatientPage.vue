@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getPatientList } from '@/services/user'
 import type { Patient } from '@/types/user'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 
 // 1.页面初始化加载数据
 const list = ref<Patient[]>([])
@@ -13,6 +13,7 @@ onMounted(() => {
   getList()
 })
 
+// 侧边栏的相关逻辑
 const options = [
   { label: '男', value: 1 },
   { label: '女', value: 0 }
@@ -21,8 +22,31 @@ const options = [
 // 侧边栏的弹出
 const show = ref(false)
 const showPopup = () => {
+  patient.value = { ...initPatient }
   show.value = true
 }
+
+// 表单数据
+const initPatient: Patient = {
+  name: '',
+  idCard: '',
+  gender: 1,
+  defaultFlag: 0
+}
+
+const patient = ref<Patient>({ ...initPatient })
+
+// 默认就诊人: 选中是 1 不选中是 0
+// 获取值: 判断如果defaultFlag 是 1 绑定的值就是 true 否则是 false
+// 设置值:如果复选框的值是 true defaultFlag的值就是1 否则是0
+const defaultFlag = computed({
+  get() {
+    return patient.value.defaultFlag === 1
+  },
+  set(val) {
+    patient.value.defaultFlag = val ? 1 : 0
+  }
+})
 </script>
 
 <template>
@@ -50,6 +74,23 @@ const showPopup = () => {
     <!-- 弹出层 -->
     <van-popup v-model:show="show" position="right">
       <cp-nav-bar :back="() => (show = false)" title="添加患者"></cp-nav-bar>
+      <van-form autocomplete="off">
+        <van-field
+          v-model="patient.name"
+          label="真实姓名"
+          placeholder="请输入真实姓名"
+        />
+        <van-field
+          v-model="patient.idCard"
+          label="身份证号"
+          placeholder="请输入身份证号"
+        />
+        <van-field label="默认就诊人">
+          <template #input>
+            <van-checkbox v-model="defaultFlag" round />
+          </template>
+        </van-field>
+      </van-form>
     </van-popup>
   </div>
 </template>
