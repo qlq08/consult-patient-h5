@@ -9,7 +9,6 @@ import type { Patient } from '@/types/user'
 import { showToast, Toast } from 'vant'
 import Validator from 'id-validator'
 import { onMounted, ref, computed } from 'vue'
-
 // 1.页面初始化加载数据
 const list = ref<Patient[]>([])
 const getList = async () => {
@@ -19,13 +18,11 @@ const getList = async () => {
 onMounted(() => {
   getList()
 })
-
 // 侧边栏的相关逻辑
 const options = [
   { label: '男', value: 1 },
   { label: '女', value: 0 }
 ]
-
 // 侧边栏的弹出
 const show = ref(false)
 const showPopup = (item?: Patient) => {
@@ -39,7 +36,6 @@ const showPopup = (item?: Patient) => {
   }
   show.value = true
 }
-
 // 表单数据
 const initPatient: Patient = {
   name: '',
@@ -47,9 +43,7 @@ const initPatient: Patient = {
   gender: 1,
   defaultFlag: 0
 }
-
 const patient = ref<Patient>({ ...initPatient })
-
 // 默认就诊人: 选中是 1 不选中是 0
 // 获取值: 判断如果defaultFlag 是 1 绑定的值就是 true 否则是 false
 // 设置值:如果复选框的值是 true defaultFlag的值就是1 否则是0
@@ -61,7 +55,6 @@ const defaultFlag = computed({
     patient.value.defaultFlag = val ? 1 : 0
   }
 })
-
 // 表单提交
 const submit = async () => {
   if (!patient.value.name) return showToast('请输入姓名')
@@ -72,7 +65,6 @@ const submit = async () => {
     return showToast('身份证号不正确')
   const info = validate.getInfo(patient.value.idCard)
   if (info.sex !== patient.value.gender) return showToast('性别与身份不符')
-
   // 添加逻辑 合并 编辑逻辑
   patient.value.id
     ? await updatePatient(patient.value)
@@ -81,11 +73,9 @@ const submit = async () => {
   show.value = false
   showToast(patient.value.id ? '编辑患者成功' : '添加患者成功')
 }
-
 // 编辑操作
 // 1. 还是在同一个popup实现，只是改一下标题,填充下表单
 // 2. 点击保存的时候,判断下当前是编辑还是添加,发不同请求
-
 // 删除操作
 // 1. 准备一个删除按钮,只在编辑时显示
 // 2. 删除的API函数
