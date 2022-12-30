@@ -1,9 +1,23 @@
 <script setup lang="ts">
 import type { Doctor } from '@/types/consult'
-
+import { followTarget } from '@/services/consult'
+import { ref } from 'vue'
 defineProps<{
   item: Doctor
 }>()
+
+// 关注逻辑
+const loading = ref(false)
+const follow = async (item: Doctor) => {
+  loading.value = true
+  try {
+    await followTarget(item.id)
+    item.likeFlag = item.likeFlag === 1 ? 0 : 1
+  } finally {
+    // 不管成功和失败,都走
+    loading.value = false
+  }
+}
 </script>
 <template>
   <div class="doctor-card">
@@ -11,9 +25,14 @@ defineProps<{
     <p class="name">{{ item.name }}</p>
     <p class="van-ellipsis">{{ item.hospitalName }} {{ item.depName }}</p>
     <p>{{ item.positionTitles }}</p>
-    <van-button round size="small" type="primary">{{
-      item.likeFlag === 1 ? '已关注' : '+关注'
-    }}</van-button>
+    <van-button
+      round
+      size="small"
+      type="primary"
+      :loading="loading"
+      @click="follow(item)"
+      >{{ item.likeFlag === 1 ? '已关注' : '+关注' }}</van-button
+    >
   </div>
 </template>
 
