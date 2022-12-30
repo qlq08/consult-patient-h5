@@ -1,5 +1,21 @@
 <script setup lang="ts">
 import DoctorCard from './DoctorCard.vue'
+import { useWindowSize } from '@vueuse/core'
+// import { onMounted, onUnmounted, ref } from 'vue'
+
+// 1.自己实现, 组件初始化计算滚动的宽度,当页面尺寸改变的时候重新计算,组件销毁需要清除组件
+/* const width = ref(150)
+const setWidth = () => (width.value = (150 / 375) * window.innerWidth)
+onMounted(() => {
+  setWidth()
+  window.addEventListener('resize', setWidth)
+})
+onUnmounted(() => {
+  window.removeEventListener('resize', setWidth)
+}) */
+
+// 2.用vueuse 工具库实现
+const { width } = useWindowSize()
 </script>
 <template>
   <div class="follow-doctor">
@@ -9,7 +25,11 @@ import DoctorCard from './DoctorCard.vue'
     </div>
     <div class="body">
       <!-- swipe组件 -->
-      <van-swipe :loop="false" :show-indicators="false" width="150">
+      <van-swipe
+        :loop="false"
+        :show-indicators="false"
+        :width="(150 / 375) * width"
+      >
         <van-swipe-item v-for="i in 5" :key="i">
           <DoctorCard />
         </van-swipe-item>
