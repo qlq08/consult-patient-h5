@@ -3,7 +3,6 @@ import type {
   KnowledgeParams,
   DoctorPage,
   PageParams,
-  DoctorList,
   FollowType
 } from '@/types/consult'
 
