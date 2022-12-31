@@ -3,14 +3,14 @@ import { ConsultTime } from '@/enums'
 
 import { uploadImage } from '@/services/consult'
 import { useConsultStore } from '@/stores/consult'
-import type { ConsultIllness } from '@/types/consult'
-import { Toast } from 'vant'
+import type { ConsultIllness, Image } from '@/types/consult'
+import { Toast, Dialog } from 'vant'
 import { useRouter } from 'vue-router'
 import type {
   UploaderAfterRead,
   UploaderFileListItem
 } from 'vant/lib/uploader/types'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 // 1.表单需要依赖的数据
 const form = ref<ConsultIllness>({
@@ -33,7 +33,7 @@ const consultFlagOptions = [
 ]
 
 // 2. 上传图片相关逻辑
-const fileList = ref([])
+const fileList = ref<Image[]>([])
 const onAfterRead: UploaderAfterRead = (item) => {
   // 选择一个图就是 item 选择多个图就是 item[],我们是一个图,而且file可能不存在
   if (Array.isArray(item)) return
@@ -64,7 +64,7 @@ const onDeleteImg = (item: UploaderFileListItem) => {
   )
 }
 
-// 保存数据相关逻辑
+// 3.保存数据相关逻辑
 const disabled = computed(() => {
   return !(
     form.value.illnessDesc &&
@@ -84,6 +84,24 @@ const next = () => {
   // 下一步
   router.push('/user/patient?isChange=1')
 }
+
+// 4.数据回显
+onMounted(() => {
+  if (store.consult.illnessDesc) {
+    // 确认提示
+    Dialog.confirm({
+      title: '温馨提示',
+      message: '是否恢复您以前填写的病情信息呢?',
+      confirmButtonColor: 'var(--cp-primary)',
+      closeOnPopstate: false
+    }).then(() => {
+      const { illnessDesc, illnessTime, consultFlag, pictures } = store.consult
+      form.value = { illnessDesc, illnessTime, consultFlag, pictures }
+      // 图片的回显
+      fileList.value = pictures || []
+    })
+  }
+})
 </script>
 <template>
   <div class="consult-illness-page">
