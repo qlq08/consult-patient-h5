@@ -93,6 +93,7 @@
     <div class="content">
       <span>订单取消</span>
     </div>
+    <div>空</div>
   </div>
 </template>
 
