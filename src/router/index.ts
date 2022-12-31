@@ -1,6 +1,13 @@
 import { useUserStore } from '@/stores'
 import { createRouter, createWebHistory } from 'vue-router'
 
+import Nprogress from 'nprogress'
+import 'nprogress/nprogress.css'
+
+// 插件配置,颜色修改
+Nprogress.configure({
+  showSpinner: false
+})
 // 回顾: Vue2的路由
 // 1.import VueRouter from 'vue-router'
 // 2. const router=new VueRouter({routers:{ // 路由规则}})
@@ -57,8 +64,7 @@ const router = createRouter({
 
 // 访问权限控制
 router.beforeEach((to) => {
-  // 修改标题
-  document.title = `优医问诊-${to.meta.title || ''}`
+  Nprogress.start()
   // 如果return true 或啥也不写  就是放行
   // 拦截到某个页面,  return '路由地址'
   const store = useUserStore()
@@ -69,4 +75,10 @@ router.beforeEach((to) => {
   // 否则不做任何处理
 })
 
+// 3.路由切换完毕后关闭
+router.afterEach((to) => {
+  // 修改标题
+  document.title = `优医问诊-${to.meta.title || ''}`
+  Nprogress.done()
+})
 export default router
