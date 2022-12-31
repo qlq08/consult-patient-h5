@@ -6,7 +6,7 @@ import {
   deletePatient
 } from '@/services/user'
 import type { Patient } from '@/types/user'
-import { showToast } from 'vant'
+import { showToast, showDialog } from 'vant'
 import Validator from 'id-validator'
 import { useRoute, useRouter } from 'vue-router'
 import { useConsultStore } from '@/stores/consult'
@@ -75,6 +75,7 @@ const submit = async () => {
     : await addPatient(patient.value)
   // 成功
   show.value = false
+  getList()
   showToast(patient.value.id ? '编辑患者成功' : '添加患者成功')
 }
 // 编辑操作
@@ -86,7 +87,10 @@ const submit = async () => {
 // 3. 确认框提示,点击确认,删除成功,关闭对话框  更新列表  提示
 const remove = async () => {
   if (patient.value.id) {
-    await showToast('你是否要删除该患者?')
+    await showDialog({
+      title: '温馨提示',
+      message: '您是否要删除该患者信息呢?'
+    })
     await deletePatient(patient.value.id)
     show.value = false
     getList()
@@ -147,7 +151,7 @@ const next = () => {
             item.idCard.replace(/^(.{6})(?:\d+)(.{4})$/, '$1******$2')
           }}</span>
           <span>{{ item.genderValue }}</span>
-          <span>{{ item.age }}</span>
+          <span>{{ item.age }}岁</span>
         </div>
         <div class="icon">
           <cp-icon name="user-edit" @click="showPopup(item)" />
