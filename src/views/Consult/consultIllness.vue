@@ -4,7 +4,7 @@ import { ConsultTime } from '@/enums'
 import { uploadImage } from '@/services/consult'
 import { useConsultStore } from '@/stores/consult'
 import type { ConsultIllness, Image } from '@/types/consult'
-import { Toast, Dialog } from 'vant'
+import { showToast, showDialog } from 'vant'
 import { useRouter } from 'vue-router'
 import type {
   UploaderAfterRead,
@@ -76,9 +76,9 @@ const disabled = computed(() => {
 const store = useConsultStore()
 const router = useRouter()
 const next = () => {
-  if (!form.value.illnessDesc) return Toast('请输入病情描述')
-  if (form.value.illnessTime === undefined) return Toast('请选择病症时间')
-  if (form.value.consultFlag === undefined) return Toast('请选择是否就诊过')
+  if (!form.value.illnessDesc) return showToast('请输入病情描述')
+  if (form.value.illnessTime === undefined) return showToast('请选择病症时间')
+  if (form.value.consultFlag === undefined) return showToast('请选择是否就诊过')
   // 保存数据
   store.setIllness(form.value)
   // 下一步
@@ -89,7 +89,7 @@ const next = () => {
 onMounted(() => {
   if (store.consult.illnessDesc) {
     // 确认提示
-    Dialog.confirm({
+    showDialog({
       title: '温馨提示',
       message: '是否恢复您以前填写的病情信息呢?',
       confirmButtonColor: 'var(--cp-primary)',
