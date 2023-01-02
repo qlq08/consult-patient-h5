@@ -1,7 +1,19 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+
 defineProps<{
   disabled: true
 }>()
+const emit = defineEmits<{
+  (e: 'send-text', text: string): void
+}>()
+const text = ref('')
+const onSendText = () => {
+  if (text.value) {
+    emit('send-text', text.value)
+    text.value = ''
+  }
+}
 </script>
 
 <template>
@@ -12,6 +24,8 @@ defineProps<{
       :border="false"
       :disabled="disabled"
       placeholder="问医生"
+      v-model="text"
+      @keyup.enter="onSendText"
       autocomplete="off"
     ></van-field>
     <!-- 不预览，使用小图标作为上传按钮 -->
