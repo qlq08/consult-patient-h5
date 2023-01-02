@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ConsultTime } from '@/enums'
-
 import { uploadImage } from '@/services/consult'
 import { useConsultStore } from '@/stores/consult'
 import type { ConsultIllness, Image } from '@/types/consult'
 import { showToast, showDialog } from 'vant'
 import { useRouter } from 'vue-router'
+import { illnessTimeOptions, consultFlagOptions } from '@/services/constants'
 import type {
   UploaderAfterRead,
   UploaderFileListItem
@@ -19,18 +18,6 @@ const form = ref<ConsultIllness>({
   consultFlag: undefined,
   pictures: []
 })
-
-const illnessTimeOptions = [
-  { label: '一周内', value: ConsultTime.Week },
-  { label: '一月内', value: ConsultTime.Month },
-  { label: '半年内', value: ConsultTime.HalfYear },
-  { label: '半年以上', value: ConsultTime.More }
-]
-
-const consultFlagOptions = [
-  { label: '就诊过', value: 1 },
-  { label: '没就诊过', value: 0 }
-]
 
 // 2. 上传图片相关逻辑
 const fileList = ref<Image[]>([])
