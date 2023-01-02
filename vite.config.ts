@@ -12,7 +12,10 @@ export default defineConfig({
   base: '/',
   plugins: [
     // 解析单文件组件的插件
-    vue(),
+    vue({
+      reactivityTransform: true
+    }),
+    // 默认自动加载components下的组件，通用级别组件
     // 自动导入的插件,解析器可以是 vant element ant-vue
     // 默认自动加载 components 下的组件,通用级别组件
     Components({
